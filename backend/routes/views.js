@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../db');
+const pool = require('../db/config');
 
 // GET public_scenes_with_users
 router.get('/public_scenes_with_users', async (req, res) => {
