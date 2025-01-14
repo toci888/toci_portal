@@ -1,30 +1,30 @@
 const express = require('express');
-const { Pool } = require('pg');
 const bodyParser = require('body-parser');
-const sceneRoutes = require('./routes/scenes');
+const cors = require('cors');
 
-const db = require('./db/config.js');
-console.log('config', db);
+const usersRoutes = require('./routes/users');
+const scenesRoutes = require('./routes/scenes');
+const postsRoutes = require('./routes/posts');
+const commentsRoutes = require('./routes/comments');
+const reactionsRoutes = require('./routes/reactions');
+const viewsRoutes = require('./routes/views');
 
 const app = express();
 const PORT = 3000;
 
 // Middleware
+app.use(cors());
 app.use(bodyParser.json());
 
 // Routes
-app.use('/api/scenes', sceneRoutes);
-
-// Database setup
-//const db = config.pool;
-
-// Sprawdzenie połączenia
-db.connect()
-  .then(() => console.log('Connected to PostgreSQL!'))
-  .catch(err => console.error('Error connecting to PostgreSQL:', err));
-
-// Udostępnianie puli połączeń w aplikacji
-app.set('db', db);
+app.use('/api/users', usersRoutes);
+app.use('/api/scenes', scenesRoutes);
+app.use('/api/posts', postsRoutes);
+app.use('/api/comments', commentsRoutes);
+app.use('/api/reactions', reactionsRoutes);
+app.use('/api/views', viewsRoutes);
 
 // Start server
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});

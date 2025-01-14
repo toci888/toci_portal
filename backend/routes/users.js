@@ -2,34 +2,34 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db/config');
 
-// GET all scenes
+// GET all users
 router.get('/', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM scenes');
+    const result = await pool.query('SELECT * FROM users');
     res.json(result.rows);
   } catch (err) {
     res.status(500).send(err.message);
   }
 });
 
-// GET scene by ID
+// GET user by ID
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await pool.query('SELECT * FROM scenes WHERE id = $1', [id]);
+    const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
     res.json(result.rows[0]);
   } catch (err) {
     res.status(500).send(err.message);
   }
 });
 
-// CREATE scene
+// CREATE user
 router.post('/', async (req, res) => {
   try {
-    const { title, description, user_id, tags } = req.body;
+    const { username, email, password_hash } = req.body;
     const result = await pool.query(
-      'INSERT INTO scenes (title, description, user_id, tags) VALUES ($1, $2, $3, $4) RETURNING *',
-      [title, description, user_id, tags]
+      'INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING *',
+      [username, email, password_hash]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -37,14 +37,14 @@ router.post('/', async (req, res) => {
   }
 });
 
-// UPDATE scene
+// UPDATE user
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, tags } = req.body;
+    const { username, email, password_hash } = req.body;
     const result = await pool.query(
-      'UPDATE scenes SET title = $1, description = $2, tags = $3, updated_at = NOW() WHERE id = $4 RETURNING *',
-      [title, description, tags, id]
+      'UPDATE users SET username = $1, email = $2, password_hash = $3, updated_at = NOW() WHERE id = $4 RETURNING *',
+      [username, email, password_hash, id]
     );
     res.json(result.rows[0]);
   } catch (err) {
@@ -52,11 +52,11 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE scene
+// DELETE user
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    await pool.query('DELETE FROM scenes WHERE id = $1', [id]);
+    await pool.query('DELETE FROM users WHERE id = $1', [id]);
     res.sendStatus(204);
   } catch (err) {
     res.status(500).send(err.message);
