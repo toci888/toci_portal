@@ -1,0 +1,28 @@
+.scene-list {
+    margin-top: 20px;
+  }
+  
+  .scene-list h2 {
+    margin-bottom: 10px;
+  }
+  
+  .scene {
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .scene h3 {
+    margin: 0;
+    margin-bottom: 5px;
+    font-size: 18px;
+  }
+  
+  .scene p {
+    margin: 0;
+    line-height: 1.5;
+  }
+  
