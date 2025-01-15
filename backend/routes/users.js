@@ -23,6 +23,19 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.post('/login', async (req, res) => {
+  try {
+    //console.log('registration',  req.body);
+
+    const { email, password } = req.body;
+    const result = await pool.query('SELECT * FROM users WHERE email = $1 and password_hash = $2', [email, password]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    res.status(500).send('nie udało sie'); //err.message
+  }
+});
+
 // CREATE user
 router.post('/', async (req, res) => {
   try {
