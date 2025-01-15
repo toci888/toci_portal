@@ -1,4 +1,6 @@
 -- Usuń widoki w odwrotnej kolejności
+ 
+DROP VIEW IF EXISTS api_keys_view;
 DROP VIEW IF EXISTS user_activity_summary;
 DROP VIEW IF EXISTS scene_reactions_with_authors;
 DROP VIEW IF EXISTS comments_with_authors_and_scenes;
@@ -7,7 +9,9 @@ DROP VIEW IF EXISTS scenes_with_reactions;
 DROP VIEW IF EXISTS scenes_with_action_tag;
 DROP VIEW IF EXISTS public_scenes_with_users;
 
+
 -- Usuń tabele w odwrotnej kolejności zależności
+drop table if exists api_keys;
 DROP TABLE IF EXISTS reactions;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS posts;
@@ -87,6 +91,16 @@ CREATE TABLE reactions (
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE,
     FOREIGN KEY (comment_id) REFERENCES comments (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS api_keys (
+    id SERIAL PRIMARY KEY,                        -- Unikalny identyfikator klucza
+    user_id INT NOT NULL,                         -- Powiązanie z użytkownikiem
+    openai_key VARCHAR(255) NOT NULL,             -- Klucz OpenAI
+    is_active BOOLEAN DEFAULT TRUE,               -- Czy klucz jest aktywny
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data dodania klucza
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data ostatniej aktualizacji
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE -- Relacja z tabelą users
 );
 
 -- Dodanie indeksów dla optymalizacji
@@ -179,6 +193,17 @@ LEFT JOIN comments c ON u.id = c.user_id
 GROUP BY u.id, u.username
 ORDER BY scenes_count DESC, comments_count DESC;
 
+CREATE OR REPLACE VIEW api_keys_view AS
+SELECT 
+    u.id AS user_id,
+    u.username,
+    k.openai_key,
+    k.is_active,
+    k.created_at
+FROM users u
+JOIN api_keys k ON u.id = k.user_id
+WHERE k.is_active = TRUE;
+
 
 -- SEED USERS
 INSERT INTO users (username, email, password_hash, created_at, updated_at) VALUES
@@ -225,3 +250,8 @@ INSERT INTO reactions (user_id, comment_id, reaction_type, created_at) VALUES
 (3, 3, 'wow', NOW()),
 (4, 4, 'like', NOW()),
 (5, 5, 'love', NOW());
+
+INSERT INTO api_keys (user_id, openai_key)
+VALUES 
+(1, 'sk-1234567890examplebartlomiej'),
+(2, 'sk-0987654321exampleagnieszka');
