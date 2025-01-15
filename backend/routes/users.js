@@ -26,14 +26,16 @@ router.get('/:id', async (req, res) => {
 // CREATE user
 router.post('/', async (req, res) => {
   try {
-    const { username, email, password_hash } = req.body;
+    console.log('registration',  req.body);
+
+    const { username, email, password } = req.body;
     const result = await pool.query(
       'INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING *',
-      [username, email, password_hash]
+      [username, email, password]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
-    res.status(500).send(err.message);
+    res.status(500).send('nie udało sie'); //err.message
   }
 });
 
