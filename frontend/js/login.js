@@ -23,6 +23,8 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 
         alert('Login successful!');
         console.log('User data:', data);
+
+        window.location.href = '/index.html';
       } else {
         const error = await response.json();
         alert('Error: ' + error.message);

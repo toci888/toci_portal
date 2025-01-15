@@ -22,7 +22,7 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
     try {
       // Send the data to the backend
         console.log(userData);
-
+       //window.location.href = '/login.html';
       const response = await fetch('http://localhost:3000/api/users', {
         method: 'POST',
         headers: {
@@ -33,6 +33,10 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
 
       if (response.ok) {
         alert('User registered successfully!');
+
+        window.location.href = '/login.html';
+
+        console.log('href');
       } else {
         const error = await response.json();
         alert('Error: ' + error.message);
